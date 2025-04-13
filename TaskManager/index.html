@@ -1,0 +1,53 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TypeScript Task Manager</title>
+    <style>
+        :root {
+            --low-priority: #4CAF50;
+            --medium-priority: #FFC107;
+            --high-priority: #F44336;
+        }
+
+        .task {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .priority-low { border-color: var(--low-priority); }
+        .priority-medium { border-color: var(--medium-priority); }
+        .priority-high { border-color: var(--high-priority); }
+
+        .completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .actions {
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    
+    <form id="taskForm">
+        <input name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="date" name="dueDate" required>
+        <select name="priority" required>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <ul id="taskList"></ul>
+
+    <script src="dist/app.js"></script>
+</body>
+</html>
