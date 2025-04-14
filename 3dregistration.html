@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Registration Form</title>
+    <title>3D Auth Forms</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .form-container {
@@ -11,10 +11,21 @@
             transition: transform 0.3s;
         }
 
-        .form-3d {
+        .auth-form {
             transform-style: preserve-3d;
-            transition: transform 0.4s;
+            transition: all 0.4s ease-in-out;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transform: translateY(20px);
+        }
+
+        .auth-form.active {
+            opacity: 1;
+            height: auto;
+            transform: translateY(0);
+            overflow: visible;
         }
 
         .input-error {
@@ -26,103 +37,182 @@
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
+
+        .password-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-purple-500 to-indigo-700 min-h-screen flex items-center justify-center">
+<body class="bg-gradient-to-br from-purple-500 to-indigo-700 min-h-screen flex items-center justify-center p-4">
     <div class="form-container" id="formContainer">
-        <form class="form-3d bg-white p-8 rounded-lg space-y-6 w-96 relative transform transition-all"
-              id="registrationForm">
+        <!-- Registration Form -->
+        <form id="registerForm" class="auth-form bg-white p-8 rounded-lg space-y-6 w-full max-w-md">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Register</h2>
             
             <div>
                 <label class="block text-gray-700 mb-2">Full Name</label>
-                <input type="text" id="name" name="name"
+                <input type="text" id="regName" name="name"
                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
-                <span class="text-red-500 text-sm hidden" id="nameError">Name must be at least 3 characters</span>
+                <span class="text-red-500 text-sm hidden" id="regNameError">Name must be at least 3 characters</span>
             </div>
 
             <div>
                 <label class="block text-gray-700 mb-2">Email</label>
-                <input type="email" id="email" name="email"
+                <input type="email" id="regEmail" name="email"
                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
-                <span class="text-red-500 text-sm hidden" id="emailError">Invalid email address</span>
+                <span class="text-red-500 text-sm hidden" id="regEmailError">Invalid email address</span>
             </div>
 
-            <div>
+            <div class="relative">
                 <label class="block text-gray-700 mb-2">Password</label>
-                <input type="password" id="password" name="password"
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
-                <span class="text-red-500 text-sm hidden" id="passwordError">
+                <div class="flex items-center">
+                    <input type="password" id="regPassword" name="password"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500 pr-10">
+                    <span class="password-toggle absolute right-3" onclick="togglePassword('regPassword')">👁️</span>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="regPasswordError">
                     Password must be at least 8 characters with 1 uppercase and 1 number
                 </span>
             </div>
 
-            <div>
+            <div class="relative">
                 <label class="block text-gray-700 mb-2">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword"
-                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
-                <span class="text-red-500 text-sm hidden" id="confirmPasswordError">Passwords do not match</span>
+                <div class="flex items-center">
+                    <input type="password" id="regConfirmPassword" name="confirmPassword"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500 pr-10">
+                    <span class="password-toggle absolute right-3" onclick="togglePassword('regConfirmPassword')">👁️</span>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="regConfirmPasswordError">Passwords do not match</span>
             </div>
 
             <button type="submit"
                     class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
                 Register
             </button>
+            <p class="text-center mt-4">
+                Already have an account? 
+                <a href="#" class="text-purple-600 hover:underline" onclick="showForm('loginForm')">Login here</a>
+            </p>
+        </form>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form bg-white p-8 rounded-lg space-y-6 w-full max-w-md active">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
+
+            <div>
+                <label class="block text-gray-700 mb-2">Email</label>
+                <input type="email" id="loginEmail" name="email"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
+                <span class="text-red-500 text-sm hidden" id="loginEmailError">Invalid email address</span>
+            </div>
+
+            <div class="relative">
+                <label class="block text-gray-700 mb-2">Password</label>
+                <div class="flex items-center">
+                    <input type="password" id="loginPassword" name="password"
+                           class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500 pr-10">
+                    <span class="password-toggle absolute right-3" onclick="togglePassword('loginPassword')">👁️</span>
+                </div>
+                <span class="text-red-500 text-sm hidden" id="loginPasswordError">Password is required</span>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                Login
+            </button>
+            <div class="text-center space-y-2">
+                <p class="mt-4">
+                    Don't have an account? 
+                    <a href="#" class="text-purple-600 hover:underline" onclick="showForm('registerForm')">Register here</a>
+                </p>
+                <p>
+                    <a href="#" class="text-purple-600 hover:underline" onclick="showForm('forgotPasswordForm')">
+                        Forgot Password?
+                    </a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="forgotPasswordForm" class="auth-form bg-white p-8 rounded-lg space-y-6 w-full max-w-md">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Reset Password</h2>
+
+            <div>
+                <label class="block text-gray-700 mb-2">Email</label>
+                <input type="email" id="forgotEmail" name="email"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-500">
+                <span class="text-red-500 text-sm hidden" id="forgotEmailError">Invalid email address</span>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                Send Reset Link
+            </button>
+            <p class="text-center mt-4">
+                Remember your password? 
+                <a href="#" class="text-purple-600 hover:underline" onclick="showForm('loginForm')">Login here</a>
+            </p>
         </form>
     </div>
 
-    <script type="text/typescript">
-        interface FormElements extends HTMLFormControlsCollection {
-            name: HTMLInputElement;
-            email: HTMLInputElement;
-            password: HTMLInputElement;
-            confirmPassword: HTMLInputElement;
+    <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+
+        // Show specific form and hide others
+        function showForm(formId) {
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            const activeForm = document.getElementById(formId);
+            activeForm.classList.add('active');
+            
+            // Reset any visible errors when switching forms
+            activeForm.querySelectorAll('.text-red-500').forEach(error => {
+                error.classList.add('hidden');
+            });
+            activeForm.querySelectorAll('input').forEach(input => {
+                input.classList.remove('border-red-500', 'input-error');
+            });
         }
 
         // Validation patterns
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-        // Form validation functions
-        const validateName = (name: string): boolean => name.length >= 3;
-        const validateEmail = (email: string): boolean => emailRegex.test(email);
-        const validatePassword = (password: string): boolean => passwordRegex.test(password);
-        const validateConfirmPassword = (password: string, confirmPassword: string): boolean => 
-            password === confirmPassword;
-
-        function showError(input: HTMLInputElement, errorElement: HTMLElement, message: string): void {
-            input.classList.add('border-red-500', 'input-error');
-            errorElement.textContent = message;
-            errorElement.classList.remove('hidden');
-        }
-
-        function clearError(input: HTMLInputElement, errorElement: HTMLElement): void {
-            input.classList.remove('border-red-500', 'input-error');
-            errorElement.classList.add('hidden');
-        }
-
-        function validateField(input: HTMLInputElement, errorElement: HTMLElement): boolean {
+        // Validation functions
+        function validateField(input, errorElement) {
             const value = input.value.trim();
             let isValid = false;
 
             switch(input.id) {
-                case 'name':
-                    isValid = validateName(value);
+                case 'regName':
+                    isValid = value.length >= 3;
                     if (!isValid) showError(input, errorElement, 'Name must be at least 3 characters');
                     break;
-                case 'email':
-                    isValid = validateEmail(value);
+                case 'regEmail':
+                case 'loginEmail':
+                case 'forgotEmail':
+                    isValid = emailRegex.test(value);
                     if (!isValid) showError(input, errorElement, 'Invalid email address');
                     break;
-                case 'password':
-                    isValid = validatePassword(value);
+                case 'regPassword':
+                    isValid = passwordRegex.test(value);
                     if (!isValid) showError(input, errorElement, 
                         'Password must be at least 8 characters with 1 uppercase and 1 number');
                     break;
-                case 'confirmPassword':
-                    const password = (document.getElementById('password') as HTMLInputElement).value;
-                    isValid = validateConfirmPassword(password, value);
+                case 'regConfirmPassword':
+                    const password = document.getElementById('regPassword').value;
+                    isValid = value === password;
                     if (!isValid) showError(input, errorElement, 'Passwords do not match');
+                    break;
+                case 'loginPassword':
+                    isValid = value.length >= 1;
+                    if (!isValid) showError(input, errorElement, 'Password is required');
                     break;
             }
 
@@ -130,56 +220,105 @@
             return isValid;
         }
 
+        function showError(input, errorElement, message) {
+            input.classList.add('border-red-500', 'input-error');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function clearError(input, errorElement) {
+            input.classList.remove('border-red-500', 'input-error');
+            errorElement.classList.add('hidden');
+        }
+
+        // Form submission handlers
+        function handleFormSubmit(formId, e) {
+            e.preventDefault();
+            const form = e.target;
+            const inputs = Array.from(form.elements);
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (input.tagName === 'INPUT') {
+                    const errorElement = document.getElementById(`${input.id}Error`);
+                    if (errorElement) {
+                        const fieldValid = validateField(input, errorElement);
+                        if (!fieldValid) isValid = false;
+                    }
+                }
+            });
+
+            if (isValid) {
+                form.classList.add('opacity-50');
+                const button = form.querySelector('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = 'Processing...';
+                
+                setTimeout(() => {
+                    form.classList.remove('opacity-50');
+                    button.innerHTML = originalText;
+                    alert(`${formId.replace('Form', '')} successful!`);
+                    
+                    // After successful registration, switch to login form
+                    if (formId === 'registerForm') {
+                        showForm('loginForm');
+                    }
+                }, 1000);
+            }
+        }
+
         // 3D effect handlers
-        function handleFormMove(e: MouseEvent): void {
-            const form = document.getElementById('registrationForm') as HTMLElement;
-            const rect = form.getBoundingClientRect();
+        function handleFormMove(e) {
+            const activeForm = document.querySelector('.auth-form.active');
+            if (!activeForm) return;
+
+            const rect = activeForm.getBoundingClientRect();
             const centerX = (rect.left + rect.right) / 2;
             const centerY = (rect.top + rect.bottom) / 2;
             
             const rotateX = -(e.clientY - centerY) / 20;
             const rotateY = (e.clientX - centerX) / 20;
             
-            form.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) 
-                                 translateZ(20px) scale(1.05)`;
+            activeForm.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px) scale(1.05)`;
         }
 
-        function resetFormPosition(): void {
-            const form = document.getElementById('registrationForm') as HTMLElement;
-            form.style.transform = 'rotateX(0) rotateY(0) translateZ(0) scale(1)';
+        function resetFormPosition() {
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.style.transform = 'rotateX(0) rotateY(0) translateZ(0) scale(1)';
+            });
         }
 
-        // Event listeners
-        document.querySelectorAll('input').forEach(input => {
-            input.addEventListener('input', () => {
-                const errorElement = document.getElementById(`${input.id}Error`) as HTMLElement;
-                validateField(input, errorElement);
+        // Initialize form events
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form submission
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    handleFormSubmit(this.id, e);
+                });
+                
+                // Input validation
+                form.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const errorElement = document.getElementById(`${this.id}Error`);
+                        if (errorElement) validateField(this, errorElement);
+                    });
+                });
+            });
+
+            // 3D effects
+            const formContainer = document.getElementById('formContainer');
+            formContainer.addEventListener('mousemove', handleFormMove);
+            formContainer.addEventListener('mouseleave', resetFormPosition);
+            
+            // Make sure register button works
+            document.querySelectorAll('[onclick*="showForm"]').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const formId = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    showForm(formId);
+                });
             });
         });
-
-        document.getElementById('registrationForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const elements = (e.target as HTMLFormElement).elements as FormElements;
-            const isValid = [
-                validateField(elements.name, document.getElementById('nameError')!),
-                validateField(elements.email, document.getElementById('emailError')!),
-                validateField(elements.password, document.getElementById('passwordError')!),
-                validateField(elements.confirmPassword, document.getElementById('confirmPasswordError')!)
-            ].every(result => result);
-
-            if (isValid) {
-                // Handle form submission
-                (e.target as HTMLFormElement).classList.add('opacity-50');
-                (e.target as HTMLFormElement).querySelector('button')!.innerHTML = 'Registering...';
-                setTimeout(() => alert('Registration successful!'), 1000);
-            }
-        });
-
-        // 3D effect event listeners
-        const formContainer = document.getElementById('formContainer')!;
-        formContainer.addEventListener('mousemove', handleFormMove);
-        formContainer.addEventListener('mouseleave', resetFormPosition);
     </script>
 </body>
 </html>
